@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#071A34">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>ExpoCibao Performance Dashboard · 2025 vs 2026</title>
+<style>
+:root{
+  --yellow:#FFDB45;
+  --blue:#071A34;
+  --blue2:#0B2C55;
+  --ink:#06111f;
+  --bg:#071A34;
+  --panel:#0b2343;
+  --panel2:#102d55;
+  --text:#f7f9fc;
+  --muted:#b9c7d9;
+  --border:rgba(255,255,255,.13);
+  --soft:rgba(255,255,255,.06);
+  --pos:#7ee0a8;
+  --neg:#ff8a8a;
+  --y2025:#9aa9ba;
+  --y2026:#FFDB45;
+  --shadow:0 18px 50px rgba(0,0,0,.24);
+}
+[data-theme="black"]{
+  --bg:#06080c;
+  --panel:#0d1118;
+  --panel2:#131923;
+  --text:#f8fafc;
+  --muted:#b4becb;
+  --border:rgba(255,255,255,.12);
+  --soft:rgba(255,255,255,.055);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--bg)}
+body{
+  margin:0;
+  font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(255,219,69,.08), transparent 34rem),
+    linear-gradient(180deg,var(--bg),var(--bg));
+  color:var(--text);
+  min-height:100%;
+}
+button{font:inherit}
+a{color:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px 60px}
+.progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--yellow),#fff2a6);z-index:100;width:0}
+.topbar{
+  position:sticky;top:0;z-index:90;
+  backdrop-filter:blur(18px);
+  background:color-mix(in srgb,var(--bg) 84%,transparent);
+  border-bottom:1px solid var(--border)
+}
+.topbar-inner{max-width:1240px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:16px;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.badge-logo{
+  width:42px;height:42px;border-radius:12px;background:var(--yellow);color:#071A34;
+  display:grid;place-items:center;font-weight:950;letter-spacing:-.04em;border:1px solid rgba(0,0,0,.15)
+}
+.brand-copy{min-width:0}
+.brand-title{font-weight:900;letter-spacing:.02em;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.actions{display:flex;align-items:center;gap:8px}
+.theme-toggle,.ghost-btn,.seg-btn{
+  border:1px solid var(--border);background:var(--soft);color:var(--text);border-radius:999px;
+  padding:10px 14px;cursor:pointer;transition:.2s ease;min-height:42px
+}
+.theme-toggle:hover,.ghost-btn:hover,.seg-btn:hover{transform:translateY(-1px);border-color:rgba(255,219,69,.5)}
+.theme-toggle.active,.seg-btn.active{background:var(--yellow);color:#071A34;border-color:var(--yellow);font-weight:900}
+.hero{padding:72px 0 36px;display:grid;grid-template-columns:1.35fr .65fr;gap:26px;align-items:end}
+.eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--yellow);font-weight:900}
+h1{
+  margin:10px 0 16px;font-size:clamp(44px,7vw,94px);line-height:.92;letter-spacing:-.055em;
+  text-transform:uppercase;max-width:930px
+}
+.hero p{font-size:clamp(16px,2vw,21px);line-height:1.5;color:var(--muted);max-width:760px;margin:0}
+.hero-meta{display:grid;gap:10px}
+.meta-card{border:1px solid var(--border);border-radius:20px;padding:18px;background:var(--soft)}
+.meta-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+.meta-value{font-size:21px;font-weight:950;margin-top:6px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:18px 0 46px}
+.kpi{
+  background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--border);
+  border-radius:22px;padding:20px;box-shadow:var(--shadow);min-width:0
+}
+.kpi-label{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800}
+.kpi-value{font-size:clamp(25px,3vw,42px);font-weight:950;margin:8px 0 5px;letter-spacing:-.04em;white-space:nowrap}
+.kpi-note{font-size:12px;color:var(--muted)}
+.kpi.emphasis{outline:1px solid rgba(255,219,69,.5)}
+.kpi.emphasis .kpi-value{color:var(--yellow)}
+.section{padding:34px 0 24px;scroll-margin-top:90px}
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:18px}
+.section-title{font-size:clamp(28px,4vw,52px);line-height:.98;letter-spacing:-.04em;text-transform:uppercase;margin:0}
+.section-desc{color:var(--muted);max-width:610px;line-height:1.5;font-size:14px}
+.panel{
+  border:1px solid var(--border);border-radius:26px;background:linear-gradient(180deg,var(--panel2),var(--panel));
+  box-shadow:var(--shadow);overflow:hidden
+}
+.panel-pad{padding:22px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.chart-wrap{position:relative;overflow:hidden}
+svg{width:100%;height:auto;display:block}
+.tooltip{
+  position:absolute;pointer-events:none;min-width:180px;max-width:240px;padding:12px 14px;border-radius:14px;
+  background:rgba(4,11,20,.96);color:white;border:1px solid rgba(255,255,255,.14);box-shadow:0 16px 40px rgba(0,0,0,.3);
+  opacity:0;transform:translateY(4px);transition:.12s ease;z-index:10;font-size:12px
+}
+.tooltip strong{font-size:14px;display:block;margin-bottom:5px}
+.tooltip .big{font-size:19px;font-weight:950;color:var(--yellow);margin:3px 0}
+.two-col{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+.insight-card{
+  border:1px solid var(--border);border-radius:22px;padding:20px;background:var(--soft)
+}
+.insight-label{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.insight-big{font-size:clamp(34px,5vw,64px);font-weight:950;letter-spacing:-.05em;margin:8px 0}
+.positive{color:var(--pos)} .negative{color:var(--neg)} .yellow{color:var(--yellow)}
+.day-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}
+.day-card{border:1px solid var(--border);border-radius:18px;padding:15px;background:var(--soft);cursor:pointer;transition:.18s ease}
+.day-card:hover,.day-card.active{border-color:var(--yellow);transform:translateY(-2px)}
+.day-card .d{font-weight:900;font-size:13px}
+.day-card .v{font-weight:950;font-size:21px;margin:6px 0}
+.day-card .p{font-size:12px;color:var(--muted)}
+.day-card.rain{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,138,138,.07))}
+.callout{
+  border-left:4px solid var(--yellow);background:rgba(255,219,69,.08);padding:18px 18px 18px 20px;border-radius:16px;
+  color:var(--text);line-height:1.5
+}
+.callout strong{color:var(--yellow)}
+.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.pay-card{padding:20px;border:1px solid var(--border);border-radius:22px;background:var(--soft)}
+.pay-card h3{margin:0 0 16px;font-size:20px}
+.stack{height:28px;border-radius:999px;overflow:hidden;border:1px solid var(--border);display:flex;background:#fff1}
+.stack span{height:100%;display:block}
+.legend{display:grid;gap:8px;margin-top:14px}
+.legend-row{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;font-size:13px}
+.dot{width:10px;height:10px;border-radius:50%}
+.small-muted{font-size:12px;color:var(--muted);line-height:1.45}
+.conclusion{
+  padding:28px;border-radius:28px;border:1px solid rgba(255,219,69,.35);
+  background:linear-gradient(135deg,rgba(255,219,69,.12),var(--panel2) 55%,var(--panel));
+}
+.conclusion h2{font-size:clamp(34px,5vw,70px);letter-spacing:-.05em;line-height:.98;text-transform:uppercase;margin:0 0 16px}
+.conclusion p{font-size:16px;line-height:1.6;color:var(--muted);max-width:900px}
+.conclusion-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}
+.nav-dots{position:fixed;right:14px;top:50%;transform:translateY(-50%);z-index:70;display:grid;gap:8px}
+.nav-dots a{width:8px;height:8px;border-radius:999px;background:rgba(255,255,255,.25);display:block;transition:.18s ease}
+.nav-dots a.active{height:28px;background:var(--yellow)}
+.footer{padding:38px 0 8px;color:var(--muted);font-size:12px;text-align:center}
+@media (max-width:900px){
+  .hero{grid-template-columns:1fr}
+  .hero-meta{grid-template-columns:repeat(2,1fr)}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .two-col,.pay-grid{grid-template-columns:1fr}
+  .day-grid{grid-template-columns:repeat(2,1fr)}
+  .nav-dots{display:none}
+}
+@media (max-width:560px){
+  .wrap{padding:0 14px 42px}
+  .topbar-inner{padding:10px 14px}
+  .brand-sub{display:none}
+  .brand-title{font-size:12px}
+  .badge-logo{width:38px;height:38px}
+  .theme-toggle{padding:9px 11px;font-size:12px}
+  .hero{padding-top:48px}
+  h1{font-size:48px}
+  .hero-meta{grid-template-columns:1fr}
+  .kpi-grid{grid-template-columns:1fr}
+  .kpi-value{white-space:normal}
+  .section-head{align-items:flex-start;flex-direction:column}
+  .day-grid{grid-template-columns:1fr}
+  .conclusion-grid{grid-template-columns:1fr}
+  .panel-pad{padding:14px}
+}
+@media print{
+  .topbar,.nav-dots,.controls{display:none!important}
+  body{background:white;color:black}
+  .wrap{max-width:none;padding:0}
+  .panel,.kpi,.insight-card,.pay-card,.conclusion{box-shadow:none;background:white;color:black;border-color:#bbb}
+  .muted,.section-desc,.kpi-note,.small-muted,.hero p{color:#444!important}
+  .section{break-inside:avoid}
+}
+</style>
+</head>
+<body data-theme="blue">
+<div class="progress" id="progress"></div>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="badge-logo">DP</div>
+      <div class="brand-copy">
+        <div class="brand-title">EXPOCIBAO · PERFORMANCE DASHBOARD</div>
+        <div class="brand-sub">Distribuidora Parra · 2025 vs 2026</div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="theme-toggle active" data-theme-btn="blue">AZUL</button>
+      <button class="theme-toggle" data-theme-btn="black">NEGRO</button>
+    </div>
+  </div>
+</header>
+
+<nav class="nav-dots" aria-label="Navegación por secciones">
+  <a href="#resumen" data-dot="resumen" class="active" aria-label="Resumen"></a>
+  <a href="#diarias" data-dot="diarias" aria-label="Ventas diarias"></a>
+  <a href="#variacion" data-dot="variacion" aria-label="Variación"></a>
+  <a href="#acumulado" data-dot="acumulado" aria-label="Acumulado"></a>
+  <a href="#pagos" data-dot="pagos" aria-label="Formas de pago"></a>
+  <a href="#dia4" data-dot="dia4" aria-label="Impacto Día 4"></a>
+  <a href="#cierre" data-dot="cierre" aria-label="Conclusión"></a>
+</nav>
+
+<main class="wrap">
+<section class="hero" id="resumen">
+  <div>
+    <div class="eyebrow">ExpoCibao 2026 · análisis comparativo</div>
+    <h1>2025 vs 2026</h1>
+    <p>Una lectura interactiva de ventas, crecimiento diario, evolución acumulada, formas de pago y el impacto excepcional de las lluvias del Día 4.</p>
+  </div>
+  <div class="hero-meta">
+    <div class="meta-card"><div class="meta-label">Periodo</div><div class="meta-value">5 días</div></div>
+    <div class="meta-card"><div class="meta-label">Comparación</div><div class="meta-value">2025 / 2026</div></div>
+  </div>
+</section>
+
+<section class="kpi-grid" aria-label="Indicadores principales">
+  <div class="kpi">
+    <div class="kpi-label">Total 2025</div>
+    <div class="kpi-value">RD$1,279,230</div>
+    <div class="kpi-note">Base comparativa</div>
+  </div>
+  <div class="kpi">
+    <div class="kpi-label">Total 2026</div>
+    <div class="kpi-value">RD$1,466,280</div>
+    <div class="kpi-note">Resultado final</div>
+  </div>
+  <div class="kpi emphasis">
+    <div class="kpi-label">Diferencia</div>
+    <div class="kpi-value">+RD$187,050</div>
+    <div class="kpi-note">Incremento absoluto</div>
+  </div>
+  <div class="kpi emphasis">
+    <div class="kpi-label">Crecimiento</div>
+    <div class="kpi-value">+14.6%</div>
+    <div class="kpi-note">2026 vs 2025</div>
+  </div>
+</section>
+
+<section class="section" id="diarias">
+  <div class="section-head">
+    <div>
+      <div class="eyebrow">01 · Ventas diarias</div>
+      <h2 class="section-title">¿Qué pasó cada día?</h2>
+    </div>
+    <div class="section-desc">Toca o pasa sobre cada barra para ver montos, diferencias y variación porcentual.</div>
+  </div>
+  <div class="panel">
+    <div class="panel-pad">
+      <div class="controls" id="metricControls">
+        <button class="seg-btn active" data-metric="sales">VENTAS</button>
+        <button class="seg-btn" data-metric="diff">DIFERENCIA</button>
+        <button class="seg-btn" data-metric="pct">% VARIACIÓN</button>
+        <button class="seg-btn" data-metric="cum">ACUMULADO</button>
+      </div>
+      <div class="chart-wrap">
+        <div class="tooltip" id="tooltip"></div>
+        <svg id="mainChart" viewBox="0 0 1000 500" role="img" aria-label="Gráfico comparativo de ventas por día"></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="variacion">
+  <div class="section-head">
+    <div>
+      <div class="eyebrow">02 · Variación diaria</div>
+      <h2 class="section-title">Dónde creció y dónde cayó</h2>
+    </div>
+    <div class="section-desc">La comparación porcentual permite distinguir rápidamente los días que impulsaron el crecimiento total.</div>
+  </div>
+  <div class="day-grid" id="dayCards"></div>
+</section>
+
+<section class="section" id="acumulado">
+  <div class="section-head">
+    <div>
+      <div class="eyebrow">03 · Evolución acumulada</div>
+      <h2 class="section-title">La ventaja se sostuvo</h2>
+    </div>
+    <div class="section-desc">Incluso después del Día 4, 2026 mantenía una ventaja acumulada sobre 2025.</div>
+  </div>
+  <div class="two-col">
+    <div class="panel"><div class="panel-pad">
+      <div class="chart-wrap"><svg id="cumChart" viewBox="0 0 1000 480" role="img" aria-label="Ventas acumuladas por día"></svg></div>
+    </div></div>
+    <div class="insight-card">
+      <div class="insight-label">Después del Día 4</div>
+      <div class="insight-big yellow">+6.0%</div>
+      <div class="small-muted">2026 acumulaba RD$696,495 frente a RD$657,330 en 2025.</div>
+      <div style="height:18px"></div>
+      <div class="insight-label">Ventaja acumulada</div>
+      <div class="insight-big">+RD$39,165</div>
+      <div class="small-muted">A pesar de que el sábado estuvo fuertemente condicionado por las lluvias.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pagos">
+  <div class="section-head">
+    <div>
+      <div class="eyebrow">04 · Formas de pago</div>
+      <h2 class="section-title">Cómo se cobraron las ventas</h2>
+    </div>
+    <div class="section-desc">Los datos reflejan efectivo, tarjeta y otros medios registrados en los cuadros originales.</div>
+  </div>
+  <div class="pay-grid">
+    <div class="pay-card">
+      <h3>2025 · RD$1,279,230</h3>
+      <div class="stack" aria-label="Composición formas de pago 2025">
+        <span style="width:65.22%;background:#c8d1dc"></span>
+        <span style="width:33.15%;background:#5b6d82"></span>
+        <span style="width:1.63%;background:#FFDB45"></span>
+      </div>
+      <div class="legend">
+        <div class="legend-row"><span class="dot" style="background:#c8d1dc"></span><span>Efectivo</span><strong>RD$834,295</strong></div>
+        <div class="legend-row"><span class="dot" style="background:#5b6d82"></span><span>Tarjeta</span><strong>RD$424,060</strong></div>
+        <div class="legend-row"><span class="dot" style="background:#FFDB45"></span><span>Crédito</span><strong>RD$20,875</strong></div>
+      </div>
+    </div>
+    <div class="pay-card">
+      <h3>2026 · RD$1,466,280</h3>
+      <div class="stack" aria-label="Composición formas de pago 2026">
+        <span style="width:69.73%;background:#FFDB45"></span>
+        <span style="width:30.24%;background:#8ea3bb"></span>
+        <span style="width:.03%;background:#ffffff"></span>
+      </div>
+      <div class="legend">
+        <div class="legend-row"><span class="dot" style="background:#FFDB45"></span><span>Efectivo</span><strong>RD$1,022,375</strong></div>
+        <div class="legend-row"><span class="dot" style="background:#8ea3bb"></span><span>Tarjeta</span><strong>RD$443,485</strong></div>
+        <div class="legend-row"><span class="dot" style="background:#ffffff"></span><span>Transferencia</span><strong>RD$420</strong></div>
+      </div>
+    </div>
+  </div>
+  <p class="small-muted" style="margin-top:10px">Nota: en 2026 el Día 3 incluye RD$2,900 adicionales del viernes (RD$1,300 efectivo + RD$1,600 tarjeta) y RD$420 por transferencia. En 2025 el crédito de RD$20,875 se atribuye al Día 5.</p>
+</section>
+
+<section class="section" id="dia4">
+  <div class="section-head">
+    <div>
+      <div class="eyebrow">05 · Impacto climático</div>
+      <h2 class="section-title">El Día 4 fue la excepción</h2>
+    </div>
+    <div class="section-desc">Las lluvias fueron más intensas el sábado 03 de octubre y afectaron significativamente la jornada.</div>
+  </div>
+  <div class="two-col">
+    <div class="insight-card">
+      <div class="insight-label">Día 4 · 2026 vs 2025</div>
+      <div class="insight-big negative">−37.6%</div>
+      <div class="small-muted">RD$215,320 en 2026 frente a RD$344,980 en 2025.</div>
+      <div style="height:14px"></div>
+      <div class="callout"><strong>Contexto:</strong> aunque hubo lluvia en otros días, el sábado 03 de octubre fue la jornada más severamente afectada.</div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-label">Si excluimos el Día 4</div>
+      <div class="insight-big positive">+33.9%</div>
+      <div class="small-muted">2026 supera a 2025 en RD$316,710 al comparar solamente los otros cuatro días.</div>
+      <div style="height:14px"></div>
+      <div class="callout"><strong>Lectura:</strong> el crecimiento estructural del resto de la feria fue mucho más fuerte de lo que muestra el +14.6% final.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="cierre">
+  <div class="conclusion">
+    <div class="eyebrow">06 · Conclusión ejecutiva</div>
+    <h2>ExpoCibao 2026 cerró arriba.</h2>
+    <p>Distribuidora Parra terminó ExpoCibao 2026 con RD$1,466,280 en ventas, un crecimiento de 14.6% frente a 2025. El Día 4 fue la única caída material del período y estuvo fuertemente condicionado por las lluvias. El Día 5 recuperó terreno con RD$769,785 y consolidó la ventaja final.</p>
+    <div class="conclusion-grid">
+      <div class="kpi"><div class="kpi-label">Mayor crecimiento</div><div class="kpi-value">+111.5%</div><div class="kpi-note">Día 2</div></div>
+      <div class="kpi"><div class="kpi-label">Mayor caída</div><div class="kpi-value">−37.6%</div><div class="kpi-note">Día 4 · lluvias</div></div>
+      <div class="kpi emphasis"><div class="kpi-label">Mayor venta diaria</div><div class="kpi-value">RD$769,785</div><div class="kpi-note">Día 5 · 2026</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="footer">Distribuidora Parra · ExpoCibao Performance Dashboard · Datos 2025–2026</div>
+</main>
+
+<script>
+const DATA = {
+  days:["Día 1","Día 2","Día 3","Día 4","Día 5"],
+  y2025:[36420,111600,164330,344980,621900],
+  y2026:[36300,235995,208880,215320,769785]
+};
+DATA.diff = DATA.y2026.map((v,i)=>v-DATA.y2025[i]);
+DATA.pct = DATA.diff.map((v,i)=>v/DATA.y2025[i]*100);
+DATA.cum25 = DATA.y2025.map((_,i)=>DATA.y2025.slice(0,i+1).reduce((a,b)=>a+b,0));
+DATA.cum26 = DATA.y2026.map((_,i)=>DATA.y2026.slice(0,i+1).reduce((a,b)=>a+b,0));
+
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const fmtRD = n => "RD$"+Math.round(n).toLocaleString("en-US");
+const fmtPct = n => (n>0?"+":"")+n.toFixed(1)+"%";
+
+function setTheme(theme){
+  document.body.dataset.theme = theme;
+  $$("[data-theme-btn]").forEach(b=>b.classList.toggle("active",b.dataset.themeBtn===theme));
+  const color = theme==="black" ? "#06080c" : "#071A34";
+  document.querySelector('meta[name="theme-color"]').setAttribute("content",color);
+  try{localStorage.setItem("dpTheme",theme)}catch(e){}
+  renderMain(currentMetric);
+  renderCum();
+}
+$$("[data-theme-btn]").forEach(b=>b.addEventListener("click",()=>setTheme(b.dataset.themeBtn)));
+try{const saved=localStorage.getItem("dpTheme");if(saved)setTheme(saved)}catch(e){}
+
+function cssVar(name){return getComputedStyle(document.documentElement).getPropertyValue(name).trim()}
+
+const tip=$("#tooltip");
+function showTip(evt, html){
+  tip.innerHTML=html; tip.style.opacity="1";
+  const box=evt.currentTarget.closest(".chart-wrap").getBoundingClientRect();
+  const x=Math.min(evt.clientX-box.left+12, box.width-230);
+  const y=Math.max(8, evt.clientY-box.top-90);
+  tip.style.left=x+"px"; tip.style.top=y+"px";
+}
+function hideTip(){tip.style.opacity="0"}
+
+let currentMetric="sales";
+$$("[data-metric]").forEach(b=>b.addEventListener("click",()=>{
+  $$("[data-metric]").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  currentMetric=b.dataset.metric;
+  renderMain(currentMetric);
+}));
+
+function renderMain(metric="sales"){
+  const svg=$("#mainChart");
+  const W=1000,H=500,L=70,R=30,T=35,B=60,innerW=W-L-R,innerH=H-T-B;
+  const grid = [];
+  const isDark = document.body.dataset.theme==="black";
+  const gridColor = isDark ? "rgba(255,255,255,.16)" : "rgba(255,255,255,.18)";
+  const text = cssVar("--text");
+  const muted = cssVar("--muted");
+  const y25 = cssVar("--y2025");
+  const y26 = cssVar("--y2026");
+  const yellow = cssVar("--yellow");
+
+  let seriesA=[], seriesB=[], mode="bars", max=1, min=0, labels=[];
+  if(metric==="sales"){seriesA=DATA.y2025;seriesB=DATA.y2026;labels=["2025","2026"];max=Math.max(...seriesB,...seriesA)*1.15}
+  if(metric==="diff"){seriesA=DATA.diff;seriesB=[];labels=["Diferencia 2026-2025"];max=Math.max(...seriesA)*1.2;min=Math.min(...seriesA)*1.35}
+  if(metric==="pct"){seriesA=DATA.pct;seriesB=[];labels=["Variación %"];max=Math.max(...seriesA)*1.2;min=Math.min(...seriesA)*1.35}
+  if(metric==="cum"){seriesA=DATA.cum25;seriesB=DATA.cum26;labels=["2025","2026"];mode="lines";max=Math.max(...seriesB)*1.12}
+
+  const y = v => T + (max-v)/(max-min)*innerH;
+  let html="";
+  for(let i=0;i<=5;i++){
+    const val=max-(max-min)*i/5, yy=T+innerH*i/5;
+    html+=`<line x1="${L}" y1="${yy}" x2="${W-R}" y2="${yy}" stroke="${gridColor}" stroke-dasharray="4 6"/>`;
+    const lab=metric==="pct"?val.toFixed(0)+"%":(Math.abs(val)>=1000000?(val/1000000).toFixed(1)+"M":Math.round(val/1000)+"k");
+    html+=`<text x="${L-12}" y="${yy+4}" fill="${muted}" font-size="12" text-anchor="end">${lab}</text>`;
+  }
+  const baseY=y(0);
+  html+=`<line x1="${L}" y1="${baseY}" x2="${W-R}" y2="${baseY}" stroke="${muted}" stroke-width="1"/>`;
+
+  const groupW=innerW/DATA.days.length;
+  DATA.days.forEach((d,i)=>{
+    const cx=L+groupW*(i+.5);
+    html+=`<text x="${cx}" y="${H-20}" fill="${text}" font-size="14" text-anchor="middle" font-weight="700">${d}</text>`;
+  });
+
+  if(mode==="bars"){
+    const bw=metric==="sales"?groupW*.27:groupW*.45;
+    DATA.days.forEach((d,i)=>{
+      if(metric==="sales"){
+        const vals=[seriesA[i],seriesB[i]], fills=[y25,y26], labs=labels;
+        vals.forEach((v,j)=>{
+          const cx=L+groupW*(i+.5)+(j?bw*.62:-bw*.62);
+          const yy=y(v), h=Math.abs(baseY-yy), ry=Math.min(yy,baseY);
+          html+=`<rect class="mark" tabindex="0" data-day="${i}" data-series="${j}" x="${cx-bw/2}" y="${ry}" width="${bw}" height="${Math.max(h,2)}" rx="8" fill="${fills[j]}" stroke="${j?yellow:'rgba(255,255,255,.28)'}" stroke-width="${j?1.5:1}">
+            <title>${d} · ${labs[j]} · ${fmtRD(v)}</title></rect>`;
+        });
+      }else{
+        const v=seriesA[i], cx=L+groupW*(i+.5), yy=y(v), h=Math.abs(baseY-yy), ry=Math.min(yy,baseY);
+        const fill=v>=0?cssVar("--pos"):cssVar("--neg");
+        html+=`<rect class="mark" tabindex="0" data-day="${i}" data-series="0" x="${cx-bw/2}" y="${ry}" width="${bw}" height="${Math.max(h,2)}" rx="9" fill="${fill}" opacity=".9">
+          <title>${d} · ${metric==="pct"?fmtPct(v):fmtRD(v)}</title></rect>`;
+        const label=metric==="pct"?fmtPct(v):((v>=0?"+":"")+fmtRD(v));
+        html+=`<text x="${cx}" y="${v>=0?yy-10:yy+22}" fill="${text}" font-size="13" text-anchor="middle" font-weight="900">${label}</text>`;
+      }
+    });
+  }else{
+    [seriesA,seriesB].forEach((arr,j)=>{
+      const color=j?y26:y25;
+      const pts=arr.map((v,i)=>`${L+groupW*(i+.5)},${y(v)}`).join(" ");
+      html+=`<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="${j?5:4}" stroke-linecap="round" stroke-linejoin="round"/>`;
+      arr.forEach((v,i)=>{
+        const cx=L+groupW*(i+.5), cy=y(v);
+        html+=`<circle class="mark" tabindex="0" data-day="${i}" data-series="${j}" cx="${cx}" cy="${cy}" r="8" fill="${color}" stroke="${cssVar("--bg")}" stroke-width="3"><title>${DATA.days[i]} · ${labels[j]} · ${fmtRD(v)}</title></circle>`;
+      });
+    });
+  }
+  svg.innerHTML=html;
+  svg.querySelectorAll(".mark").forEach(el=>{
+    const activate=evt=>{
+      const i=+el.dataset.day,j=+el.dataset.series;
+      let content="";
+      if(metric==="sales"){
+        const yr=j===0?"2025":"2026"; const v=j===0?DATA.y2025[i]:DATA.y2026[i];
+        content=`<strong>${DATA.days[i]} · ${yr}</strong><div class="big">${fmtRD(v)}</div><div>Diferencia: ${(DATA.diff[i]>=0?"+":"")+fmtRD(DATA.diff[i])}</div><div>Variación: ${fmtPct(DATA.pct[i])}</div>`;
+      }else if(metric==="diff"){
+        content=`<strong>${DATA.days[i]}</strong><div class="big">${(DATA.diff[i]>=0?"+":"")+fmtRD(DATA.diff[i])}</div><div>2026 vs 2025</div>`;
+      }else if(metric==="pct"){
+        content=`<strong>${DATA.days[i]}</strong><div class="big">${fmtPct(DATA.pct[i])}</div><div>${fmtRD(DATA.y2026[i])} vs ${fmtRD(DATA.y2025[i])}</div>`;
+      }else{
+        const v=j===0?DATA.cum25[i]:DATA.cum26[i],yr=j===0?"2025":"2026";
+        content=`<strong>${DATA.days[i]} · acumulado ${yr}</strong><div class="big">${fmtRD(v)}</div>`;
+      }
+      showTip(evt,content);
+    };
+    el.addEventListener("pointermove",activate);
+    el.addEventListener("pointerenter",activate);
+    el.addEventListener("pointerleave",hideTip);
+    el.addEventListener("click",activate);
+    el.addEventListener("focus",e=>{const r=el.getBoundingClientRect();activate({currentTarget:el,clientX:r.left+r.width/2,clientY:r.top+r.height/2})});
+    el.addEventListener("blur",hideTip);
+  });
+}
+
+function renderCum(){
+  const svg=$("#cumChart"),W=1000,H=480,L=70,R=25,T=30,B=55,iw=W-L-R,ih=H-T-B;
+  const max=Math.max(...DATA.cum26)*1.1;
+  const x=i=>L+iw*(i/(DATA.days.length-1));
+  const y=v=>T+(max-v)/max*ih;
+  const text=cssVar("--text"),muted=cssVar("--muted"),y25=cssVar("--y2025"),y26=cssVar("--y2026");
+  let html="";
+  for(let i=0;i<=4;i++){
+    const val=max*(1-i/4),yy=T+ih*i/4;
+    html+=`<line x1="${L}" y1="${yy}" x2="${W-R}" y2="${yy}" stroke="rgba(255,255,255,.14)" stroke-dasharray="4 6"/>`;
+    html+=`<text x="${L-12}" y="${yy+4}" fill="${muted}" font-size="12" text-anchor="end">${(val/1000000).toFixed(1)}M</text>`;
+  }
+  [DATA.cum25,DATA.cum26].forEach((arr,j)=>{
+    const color=j?y26:y25;
+    html+=`<polyline points="${arr.map((v,i)=>`${x(i)},${y(v)}`).join(" ")}" fill="none" stroke="${color}" stroke-width="${j?5:4}" stroke-linejoin="round"/>`;
+    arr.forEach((v,i)=>{
+      html+=`<circle cx="${x(i)}" cy="${y(v)}" r="7" fill="${color}" stroke="${cssVar("--bg")}" stroke-width="3"><title>${DATA.days[i]} · ${j?"2026":"2025"} · ${fmtRD(v)}</title></circle>`;
+      html+=`<text x="${x(i)}" y="${H-20}" fill="${text}" font-size="13" text-anchor="middle">${DATA.days[i]}</text>`;
+    });
+  });
+  svg.innerHTML=html;
+}
+
+function renderDayCards(){
+  const host=$("#dayCards");
+  host.innerHTML=DATA.days.map((d,i)=>{
+    const cls=DATA.pct[i]>=0?"positive":"negative";
+    return `<div class="day-card ${i===3?"rain":""}" tabindex="0">
+      <div class="d">${d}${i===3?" · LLUVIAS":""}</div>
+      <div class="v ${cls}">${fmtPct(DATA.pct[i])}</div>
+      <div class="p">${fmtRD(DATA.y2026[i])} vs ${fmtRD(DATA.y2025[i])}</div>
+    </div>`;
+  }).join("");
+}
+renderDayCards(); renderMain(); renderCum();
+
+window.addEventListener("scroll",()=>{
+  const max=document.documentElement.scrollHeight-innerHeight;
+  $("#progress").style.width=(max>0?(scrollY/max*100):0)+"%";
+},{passive:true});
+
+const sections=$$("main section[id]");
+const dots=$$(".nav-dots a");
+const io=new IntersectionObserver(entries=>{
+  const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+  if(!visible)return;
+  dots.forEach(d=>d.classList.toggle("active",d.dataset.dot===visible.target.id));
+},{threshold:[.25,.5,.75],rootMargin:"-10% 0px -55% 0px"});
+sections.forEach(s=>io.observe(s));
+</script>
+</body>
+</html>
